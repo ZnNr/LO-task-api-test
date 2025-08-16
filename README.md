@@ -136,31 +136,6 @@ make cover-html
 make all
 ```
 
-## Структура проекта
-
-LO-task-api-test/
-├── cmd/
-│ └── main.go # Точка входа
-├── internal/
-│ ├── task/
-│ │ ├── task.go # Модели задач
-│ │ ├── repository.go # Хранилище в памяти
-│ │ ├── service.go # Бизнес-логика
-│ │ └── *.go # Тесты
-│ ├── handler/
-│ │ ├── task_handler.go # HTTP хендлеры
-│ │ └── *.go # Тесты
-│ └── logger/
-│ ├── logger.go # Асинхронный логгер
-│ └── *.go # Тесты
-├── integration/
-│ └── *.go # Интеграционные тесты
-├── go.mod # Модуль Go
-├── go.sum # Зависимости
-├── Makefile # Сборка и тестирование
-├── .golangci.yml # Конфигурация линтеров
-└── README.md # Документация
-
 ## Логирование
 
 Все операции логируются в файл app.log в формате:
@@ -194,5 +169,5 @@ staticcheck — статический анализ
 errcheck — проверка обработки ошибок
 revive — стилистические проверки
 
-Автор
-znnr
+## Автор
+github.com/ZnNr
