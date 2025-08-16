@@ -19,7 +19,7 @@ import (
 
 // TestTaskAPI_Integration тестирует основные сценарии работы с задачами
 func TestTaskAPI_Integration(t *testing.T) {
-	// Создаем компоненты
+
 	repo := task.NewInMemoryTaskRepository()
 	service := task.NewTaskService(repo)
 	logChan := make(chan string, 100)
@@ -124,10 +124,8 @@ func TestTaskAPI_Concurrent(t *testing.T) {
 	service := task.NewTaskService(repo)
 	logChan := make(chan string, 1000)
 
-	// Асинхронное логирование
 	go func() {
 		for range logChan {
-			// Игнорируем сообщения в тестах
 		}
 	}()
 
@@ -147,7 +145,6 @@ func TestTaskAPI_Concurrent(t *testing.T) {
 		}(i)
 	}
 
-	// Ждем завершения
 	for i := 0; i < 10; i++ {
 		select {
 		case <-done:
@@ -156,7 +153,6 @@ func TestTaskAPI_Concurrent(t *testing.T) {
 		}
 	}
 
-	// Проверяем, что все задачи созданы
 	req := httptest.NewRequest(http.MethodGet, "/tasks", nil)
 	w := httptest.NewRecorder()
 	taskHandler.HandleTasks(w, req)
@@ -177,16 +173,13 @@ func TestTaskAPI_ContextTimeout(t *testing.T) {
 	service := task.NewTaskService(repo)
 	logChan := make(chan string, 100)
 
-	// Асинхронное логирование
 	go func() {
 		for range logChan {
-			// Игнорируем сообщения в тестах
 		}
 	}()
 
 	taskHandler := handler.NewTaskHandler(service, logChan)
 
-	// Создаем контекст с таймаутом
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
 
@@ -195,6 +188,5 @@ func TestTaskAPI_ContextTimeout(t *testing.T) {
 
 	taskHandler.HandleTasks(w, req)
 
-	// В данном случае таймаут не должен повлиять, так как операции быстрые
 	assert.Equal(t, http.StatusOK, w.Code, "Expected 200 OK")
 }
