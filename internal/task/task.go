@@ -1,9 +1,11 @@
 package task
 
+import "errors"
+
 type Status string
 
 const (
-	StatusPending    Status = "Pending"
+	StatusPending    Status = "pending"
 	StatusInProgress Status = "in_progress"
 	StatusCompleted  Status = "completed"
 )
@@ -14,3 +16,6 @@ type Task struct {
 	Status      Status `json:"status"`
 	Description string `json:"description"`
 }
+
+// ErrTaskNotFound возвращается, когда задача не найдена
+var ErrTaskNotFound = errors.New("task not found")

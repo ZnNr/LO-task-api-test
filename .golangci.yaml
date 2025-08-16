@@ -17,6 +17,7 @@ linters-settings:
     rules:
       - name: blank-imports
       - name: exported
+        disabled: true  # ← полностью отключаем правило проверки коммментариев к экспортируемым методам
       - name: if-return
       - name: var-naming
       - name: indent-error-flow

@@ -1,29 +1,41 @@
+// Package task предоставляет модели и логику работы с задачами
 package task
 
-import "sync"
+import (
+	"sync"
+)
 
-type Repository struct {
-	tasks  map[int]Task
-	nextID int
-	mu     sync.RWMutex
+// Repository определяет интерфейс для работы с хранилищем задач
+type Repository interface {
+	CreateTask(task *Task) error
+	GetAllTask(status *Status) ([]Task, error)
+	GetTaskByID(id int) (*Task, error)
 }
 
-func NewRepository() *Repository {
-	return &Repository{
+type InMemoryTaskRepository struct {
+	mu     sync.RWMutex
+	tasks  map[int]Task
+	nextID int
+}
+
+func NewInMemoryTaskRepository() *InMemoryTaskRepository {
+	return &InMemoryTaskRepository{
 		tasks:  make(map[int]Task),
 		nextID: 1,
 	}
 }
 
-func (r *Repository) Create(t *Task) {
+func (r *InMemoryTaskRepository) CreateTask(task *Task) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	t.ID = r.nextID
-	r.tasks[t.ID] = *t
+
+	task.ID = r.nextID
+	r.tasks[task.ID] = *task
 	r.nextID++
+	return nil
 }
 
-func (r *Repository) GetAll(status *Status) []Task {
+func (r *InMemoryTaskRepository) GetAllTask(status *Status) ([]Task, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
@@ -33,12 +45,15 @@ func (r *Repository) GetAll(status *Status) []Task {
 			result = append(result, t)
 		}
 	}
-	return result
+	return result, nil
 }
 
-func (r *Repository) GetByID(id int) (*Task, bool) {
+func (r *InMemoryTaskRepository) GetTaskByID(id int) (*Task, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	t, ok := r.tasks[id]
-	return &t, ok
+
+	if t, exists := r.tasks[id]; exists {
+		return &t, nil
+	}
+	return nil, ErrTaskNotFound
 }
